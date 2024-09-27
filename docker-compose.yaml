@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  invoices-api-js:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fedissary-api-js:latest
+    ports:
+      - "8080:8080"
