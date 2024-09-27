@@ -1,7 +1,5 @@
 # GNU General Public License
 
-============================
-
 _Version 3, 29 June 2007_  
 _Copyright © 2007 Free Software Foundation, Inc. &lt;<http://fsf.org/>&gt;_
 
@@ -553,7 +551,7 @@ to the start of each source file to most effectively state the exclusion of warr
 and each file should have at least the “copyright” line and a pointer to
 where the full notice is found.
 
-    <Fedissary | Decentralized social media app using ActivityPub | API>
+    <Fedissary | Decentralized social media app using ActivityPub | Express.js API>
     Copyright (C) <2024>  <The Fedissary Project>
 
     This program is free software: you can redistribute it and/or modify
@@ -574,7 +572,7 @@ Also add information on how to contact you by electronic and paper mail.
 If the program does terminal interaction, make it output a short notice like this
 when it starts in an interactive mode:
 
-    <Fedissary | Decentralized social media app using ActivityPub | API>  Copyright (C) <2024>  <The Fedissary Project>
+    <Fedissary | Decentralized social media app using ActivityPub | Express.js API>  Copyright (C) <2024>  <The Fedissary Project>
     This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type 'show c' for details.

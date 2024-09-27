@@ -4,7 +4,7 @@
 
 Express.js API for a decentralized social networking application using ActivityPub and Matrix.
 
-## React Web Client
+## React.js Web Client
 
 <https://github.com/agent-indigo/fedissary-web>
 
