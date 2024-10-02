@@ -33,12 +33,15 @@ const apex = activitypubExpress({
 })
 const mongoDbClient = new MongoClient(process.env.MONGODB_CXN_STR ?? '')
 const app = express()
-app.use(express.json({
-  type: apex.consts.jsonldTypes
-}))
-app.use(express.urlencoded({
-  extended: true
-}))
+app.use(
+  express.json({
+    type: apex.consts.jsonldTypes
+  }),
+  express.urlencoded({
+    extended: true
+  }),
+  apex
+)
 app.route(routes.inbox).get(apex.net.inbox.get).post(apex.net.inbox.post)
 app.route(routes.outbox).get(apex.net.outbox.get).post(apex.net.outbox.post)
 app.get(
