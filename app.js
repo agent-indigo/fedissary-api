@@ -66,7 +66,7 @@ app.get(
 )
 app.get(
   routes.activity,
-  apex.net.activity.get
+  apex.net.activityStream.get
 )
 app.get(
   routes.shares,
