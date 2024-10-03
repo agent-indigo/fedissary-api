@@ -5,7 +5,8 @@ const authorize = (...roles) => catchRequestErrors(async (
   response,
   next
 ) => {
-  if (roles.includes((await userModel.findById(request._id)).role)) {
+  const user = await userModel.findById(request.params._id)
+  if (roles.some(role => user.roles.includes(role))) {
     next()
   } else {
     response.status(401)
