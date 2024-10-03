@@ -1,5 +1,5 @@
 import {connect, set} from 'mongoose'
-const connectToMongoDB = async () => {
+const connectMongoose = async () => {
   let connected = false
   set('strictQuery', true)
   if (!connected) {
@@ -12,11 +12,11 @@ const connectToMongoDB = async () => {
         process.env.MONGODB_HOST
       }/fedissary?retryWrites=true&w=majority`)
       connected = true
-      console.log('MongoDB successfully connected.')
+      console.log('Mongoose successfully connected.')
     } catch (error) {
-      console.error(`MongoDB connection error:\n${error}`)
+      console.error(`Mongoose connection error:\n${error}`)
       process.exit(1)
     }
   }
 }
-export default connectToMongoDB
+export default connectMongoose
