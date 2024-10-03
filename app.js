@@ -1,7 +1,17 @@
+import {createWriteStream} from 'fs'
+import {dirname, join} from 'path'
+import {fileURLToPath} from 'url'
 import 'dotenv/config'
 import express from 'express'
 import activitypubExpress from 'activitypub-express'
 import {MongoClient} from 'mongodb'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+import helmet from 'helmet'
+import hpp from 'hpp'
+import rateLimit from 'express-rate-limit'
+import morgan from 'morgan'
+import session from 'express-session'
 const domain = process.env.DOMAIN ?? ''
 const routes = {
   actor: '/u/:actor',
@@ -40,7 +50,33 @@ app.use(
   express.urlencoded({
     extended: true
   }),
-  apex
+  apex,
+  cookieParser(),
+  session({
+    secret: process.env.SESSION_SECRET ?? '',
+    resave: false,
+    saveUninitialized: false
+  }),
+  cors(),
+  helmet(),
+  helmet.xssFilter(),
+  hpp(),
+  rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 100
+  }),
+  morgan(
+    ':url,:method,:status,:response-time,:date[web]', {
+      stream: createWriteStream(
+        join(
+          dirname(fileURLToPath(import.meta.url)),
+          'log.csv'
+        ), {
+          flags: 'a'
+        }
+      )
+    }
+  )
 )
 app.route(routes.inbox).get(apex.net.inbox.get).post(apex.net.inbox.post)
 app.route(routes.outbox).get(apex.net.outbox.get).post(apex.net.outbox.post)

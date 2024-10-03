@@ -6,5 +6,6 @@ docker-compose.yaml
 Dockerfile
 environmentTemplate.txt
 LICENSE.md
+log.csv
 prettier.config.json
 README.md
