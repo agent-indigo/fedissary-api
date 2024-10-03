@@ -50,7 +50,7 @@ const apex = activitypubExpress({
   activityParam: 'id',
   routes,
   endpoints: {
-    proxyUrl: `${protocol}://${domain}/proxy`
+    proxyUrl: `${protocol}://${domain}/api/ap/proxy`
   }
 })
 const app = express()
@@ -144,22 +144,6 @@ app.get(
 app.post(
   '/proxy',
   apex.net.proxy.post
-)
-app.on(
-  'apex-outbox',
-  msg => {
-    if (msg.mkactivity.type === 'Create') {
-      console.log(`New ${msg.object.type} from ${msg.actor}`)
-    }
-  }
-)
-app.on(
-  'apex-inbox',
-  msg => {
-    if (msg.mkactivity.type === 'Create') {
-      console.log(`New ${msg.object.type} from ${msg.actor}`)
-    }
-  }
 )
 app.use(send404responses)
 app.use(sendErrorResponses)
