@@ -1,5 +1,5 @@
-import {Schema, model, models} from 'mongoose'
-const userSchema = new Schema({
+import mongoose from 'mongoose'
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: [
@@ -82,7 +82,7 @@ const userSchema = new Schema({
 }, {
   timestamps: true
 })
-const userModel = models.user ?? model(
+const userModel = mongoose.models.user ?? mongoose.model(
   'user',
   userSchema
 )

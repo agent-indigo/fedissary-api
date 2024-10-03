@@ -15,6 +15,7 @@ import {MongoClient} from 'mongodb'
 import connectMongoose from './utilities/connectMongoose.js'
 import send404responses from './middleware/send404responses.js'
 import sendErrorResponses from './middleware/sendErrorResponses.js'
+import noAdminRouter from './routers/noAdminRouter.js'
 const domain = process.env.DOMAIN ?? ''
 const mode = process.env.NODE_ENV ?? 'development'
 const protocol = mode === 'production' ? 'https' : 'http'
@@ -145,6 +146,10 @@ app.post(
   '/proxy',
   apex.net.proxy.post
 )
+app.use(
+  '/api/noAdmin',
+  noAdminRouter
+)
 app.use(send404responses)
 app.use(sendErrorResponses)
 dbClient.connect().then(() => {
@@ -154,6 +159,12 @@ dbClient.connect().then(() => {
   connectMongoose()
   app.listen(
     8080,
-    () => console.log(`Listening on ${protocol}://${domain}:8080 in ${mode} mode`)
+    () => console.log(`Listening on ${
+      protocol
+    }://${
+      domain
+    }:8080 in ${
+      mode
+    } mode`)
   )
 })
