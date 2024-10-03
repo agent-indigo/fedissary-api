@@ -4,7 +4,6 @@ import {fileURLToPath} from 'url'
 import 'dotenv/config'
 import express from 'express'
 import activitypubExpress from 'activitypub-express'
-import connectToMongoDB from './utilities/connectToMongoDB'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -12,7 +11,20 @@ import hpp from 'hpp'
 import rateLimit from 'express-rate-limit'
 import morgan from 'morgan'
 import session from 'express-session'
+import {MongoClient} from 'mongodb'
+import connectMongoose from './utilities/connectMongoose.js'
+import send404responses from './middleware/send404responses.js'
+import sendErrorResponses from './middleware/sendErrorResponses.js'
 const domain = process.env.DOMAIN ?? ''
+const mode = process.env.NODE_ENV ?? 'development'
+const protocol = mode === 'production' ? 'https' : 'http'
+const dbClient = new MongoClient(`mongodb+srv://${
+  process.env.MONGODB_USER
+}:${
+  process.env.MONGODB_PASSWORD
+}@${
+  process.env.MONGODB_HOST
+}?retryWrites=true&w=majority`)
 const routes = {
   actor: '/u/:actor',
   object: '/o/:id',
@@ -38,7 +50,7 @@ const apex = activitypubExpress({
   activityParam: 'id',
   routes,
   endpoints: {
-    proxyUrl: `https://${domain}/proxy`
+    proxyUrl: `${protocol}://${domain}/proxy`
   }
 })
 const app = express()
@@ -77,8 +89,14 @@ app.use(
     }
   )
 )
-app.route(routes.inbox).get(apex.net.inbox.get).post(apex.net.inbox.post)
-app.route(routes.outbox).get(apex.net.outbox.get).post(apex.net.outbox.post)
+app
+.route(routes.inbox)
+.get(apex.net.inbox.get)
+.post(apex.net.inbox.post)
+app
+.route(routes.outbox)
+.get(apex.net.outbox.get)
+.post(apex.net.outbox.post)
 app.get(
   routes.actor,
   apex.net.actor.get
@@ -143,10 +161,15 @@ app.on(
     }
   }
 )
-connectToMongoDB().then(() => {
-  apex.store.db = process.env.MONGODB_DATABASE_NAME
+app.use(send404responses)
+app.use(sendErrorResponses)
+dbClient.connect().then(() => {
+  apex.store.db = dbClient.db('fedissary')
   return apex.store.setup()
-}).then(() => app.listen(
-  8080,
-  () => console.log(`Listening on port 8080 in ${process.env.NODE_ENV} mode`)
-))
+}).then(() => {
+  connectMongoose()
+  app.listen(
+    8080,
+    () => console.log(`Listening on ${protocol}://${domain}:8080 in ${mode} mode`)
+  )
+})

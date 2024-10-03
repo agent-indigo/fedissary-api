@@ -1,6 +1,6 @@
-import handleAsyncFn from './handleAsyncFn'
-import userModel from '../models/userModel'
-const authorize = (...roles) => handleAsyncFn(async (
+import catchRequestErrors from './catchRequestErrors.js'
+import userModel from '../models/userModel.js'
+const authorize = (...roles) => catchRequestErrors(async (
   request,
   response,
   next
