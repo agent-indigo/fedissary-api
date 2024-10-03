@@ -4,7 +4,7 @@ import {fileURLToPath} from 'url'
 import 'dotenv/config'
 import express from 'express'
 import activitypubExpress from 'activitypub-express'
-import {MongoClient} from 'mongodb'
+import connectToMongoDB from './utilities/connectToMongoDB'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -41,7 +41,6 @@ const apex = activitypubExpress({
     proxyUrl: `https://${domain}/proxy`
   }
 })
-const mongoDbClient = new MongoClient(process.env.MONGODB_CXN_STR ?? '')
 const app = express()
 app.use(
   express.json({
@@ -144,8 +143,8 @@ app.on(
     }
   }
 )
-mongoDbClient.connect().then(() => {
-  apex.store.db = mongoDbClient.db('fedissary')
+connectToMongoDB().then(() => {
+  apex.store.db = process.env.MONGODB_DATABASE_NAME
   return apex.store.setup()
 }).then(() => app.listen(
   8080,
