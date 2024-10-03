@@ -29,6 +29,19 @@ const userSchema = new Schema({
       'A password is needed.'
     ]
   },
+  role: {
+    type: String,
+    enum: [
+      'admin',
+      'root',
+      'user'
+    ],
+    default: 'user',
+    required: [
+      true,
+      'A role is required.'
+    ]
+  },
   actorId: {
     type: String,
     unique: [
@@ -68,6 +81,14 @@ const userSchema = new Schema({
   }
 }, {
   timestamps: true
+})
+userSchema.index({
+  role: 1
+}, {
+  unique: true,
+  partialFilterExpression: {
+    role: 'root'
+  }
 })
 const userModel = models.user ?? model(
   'user',
