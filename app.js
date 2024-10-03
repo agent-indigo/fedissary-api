@@ -26,20 +26,20 @@ const dbClient = new MongoClient(`mongodb+srv://${
   process.env.MONGODB_HOST
 }?retryWrites=true&w=majority`)
 const routes = {
-  actor: '/u/:actor',
-  object: '/o/:id',
-  activity: '/s/:id',
-  inbox: '/u/:actor/inbox',
-  outbox: '/u/:actor/outbox',
-  followers: '/u/:actor/followers',
-  following: '/u/:actor/following',
-  liked: '/u/:actor/liked',
-  collections: '/u/:actor/c/:id',
-  blocked: '/u/:actor/blocked',
-  rejections: '/u/:actor/rejections',
-  rejected: '/u/:actor/rejected',
-  shares: '/s/:id/shares',
-  likes: '/s/:id/likes'
+  actor: '/api/ap/u/:actor',
+  object: '/api/ap/o/:id',
+  activity: '/api/ap/s/:id',
+  inbox: '/api/ap/u/:actor/inbox',
+  outbox: '/api/ap/u/:actor/outbox',
+  followers: '/api/ap/u/:actor/followers',
+  following: '/api/ap/u/:actor/following',
+  liked: '/api/ap/u/:actor/liked',
+  collections: '/api/ap/u/:actor/c/:id',
+  blocked: '/api/ap/u/:actor/blocked',
+  rejections: '/api/ap/u/:actor/rejections',
+  rejected: '/api/ap/u/:actor/rejected',
+  shares: '/api/ap/s/:id/shares',
+  likes: '/api/ap/s/:id/likes'
 }
 const apex = activitypubExpress({
   name: 'fedissary',
