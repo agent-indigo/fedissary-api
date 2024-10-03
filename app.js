@@ -109,7 +109,7 @@ app.on(
   }
 )
 mongoDbClient.connect().then(() => {
-  apex.store.db = mongoDbClient.db('DB_NAME')
+  apex.store.db = mongoDbClient.db('fedissary')
   return apex.store.setup()
 }).then(() => app.listen(
   8080,
