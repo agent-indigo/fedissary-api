@@ -29,18 +29,19 @@ const userSchema = new Schema({
       'A password is needed.'
     ]
   },
-  role: {
-    type: String,
+  roles: {
+    type: [String],
     enum: [
-      'admin',
-      'root',
+      'administrator',
+      'developer',
+      'moderator',
       'user'
     ],
-    default: 'user',
     required: [
       true,
-      'A role is required.'
-    ]
+      'At least one role is required.'
+    ],
+    default: ['user']
   },
   actorId: {
     type: String,
@@ -76,19 +77,10 @@ const userSchema = new Schema({
     type: String
   },
   mfaRecoveryCodes: {
-    type: Array,
-    default: []
+    type: [String]
   }
 }, {
   timestamps: true
-})
-userSchema.index({
-  role: 1
-}, {
-  unique: true,
-  partialFilterExpression: {
-    role: 'root'
-  }
 })
 const userModel = models.user ?? model(
   'user',
