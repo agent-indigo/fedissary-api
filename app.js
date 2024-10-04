@@ -3,22 +3,14 @@ import {dirname, join} from 'path'
 import {fileURLToPath} from 'url'
 import 'dotenv/config'
 import express from 'express'
-import activitypubExpress from 'activitypub-express'
-import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import helmet from 'helmet'
 import hpp from 'hpp'
 import rateLimit from 'express-rate-limit'
 import morgan from 'morgan'
-import session from 'express-session'
 import {MongoClient} from 'mongodb'
-import connectMongoose from './utilities/connectMongoose.js'
-import send404responses from './middleware/send404responses.js'
-import sendErrorResponses from './middleware/sendErrorResponses.js'
-import noAdminRouter from './routers/noAdminRouter.js'
-const domain = process.env.DOMAIN ?? ''
-const mode = process.env.NODE_ENV ?? 'development'
-const protocol = mode === 'production' ? 'https' : 'http'
+import apex from './config/apex.js'
+import apRouter from './routers/apRouter.js'
 const dbClient = new MongoClient(`mongodb+srv://${
   process.env.MONGODB_USER
 }:${
@@ -26,34 +18,6 @@ const dbClient = new MongoClient(`mongodb+srv://${
 }@${
   process.env.MONGODB_HOST
 }?retryWrites=true&w=majority`)
-const routes = {
-  actor: '/api/ap/u/:actor',
-  object: '/api/ap/o/:id',
-  activity: '/api/ap/s/:id',
-  inbox: '/api/ap/u/:actor/inbox',
-  outbox: '/api/ap/u/:actor/outbox',
-  followers: '/api/ap/u/:actor/followers',
-  following: '/api/ap/u/:actor/following',
-  liked: '/api/ap/u/:actor/liked',
-  collections: '/api/ap/u/:actor/c/:id',
-  blocked: '/api/ap/u/:actor/blocked',
-  rejections: '/api/ap/u/:actor/rejections',
-  rejected: '/api/ap/u/:actor/rejected',
-  shares: '/api/ap/s/:id/shares',
-  likes: '/api/ap/s/:id/likes'
-}
-const apex = activitypubExpress({
-  name: 'fedissary',
-  version: '0.1.0',
-  domain,
-  actorParam: 'actor',
-  objectParam: 'id',
-  activityParam: 'id',
-  routes,
-  endpoints: {
-    proxyUrl: `${protocol}://${domain}/api/ap/proxy`
-  }
-})
 const app = express()
 app.use(
   express.json({
@@ -63,12 +27,6 @@ app.use(
     extended: true
   }),
   apex,
-  cookieParser(),
-  session({
-    secret: process.env.SESSION_SECRET ?? '',
-    resave: false,
-    saveUninitialized: false
-  }),
   cors(),
   helmet(),
   helmet.xssFilter(),
@@ -90,81 +48,20 @@ app.use(
     }
   )
 )
-app
-.route(routes.inbox)
-.get(apex.net.inbox.get)
-.post(apex.net.inbox.post)
-app
-.route(routes.outbox)
-.get(apex.net.outbox.get)
-.post(apex.net.outbox.post)
-app.get(
-  routes.actor,
-  apex.net.actor.get
-)
-app.get(
-  routes.followers,
-  apex.net.followers.get
-)
-app.get(
-  routes.following,
-  apex.net.following.get
-)
-app.get(
-  routes.liked,
-  apex.net.liked.get
-)
-app.get(
-  routes.object,
-  apex.net.object.get
-)
-app.get(
-  routes.activity,
-  apex.net.activityStream.get
-)
-app.get(
-  routes.shares,
-  apex.net.shares.get
-)
-app.get(
-  routes.likes,
-  apex.net.likes.get
-)
-app.get(
-  '/.well-known/webfinger',
-  apex.net.webfinger.get
-)
-app.get(
-  '/.well-known/node-info',
-  apex.net.nodeInfoLocation.get
-)
-app.get(
-  '/nodeinfo/:version',
-  apex.net.nodeInfo.get
-)
-app.post(
-  '/proxy',
-  apex.net.proxy.post
-)
 app.use(
-  '/api/noAdmin',
-  noAdminRouter
+  '/api/ap',
+  apRouter
 )
-app.use(send404responses)
-app.use(sendErrorResponses)
 dbClient.connect().then(() => {
   apex.store.db = dbClient.db('fedissary')
   return apex.store.setup()
-}).then(() => {
-  connectMongoose()
-  app.listen(
-    8080,
-    () => console.log(`Listening on ${
-      protocol
-    }://${
-      domain
-    }:8080 in ${
-      mode
-    } mode`)
-  )
-})
+}).then(() => app.listen(
+  8080,
+  () => console.log(`Listening on ${
+    process.env.NODE_ENV === 'production' ? 'https' : 'http'
+  }://${
+    process.env.DOMAIN
+  }:8080 in ${
+    process.env.NODE_ENV
+  } mode`)
+))

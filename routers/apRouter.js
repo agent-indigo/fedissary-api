@@ -1,0 +1,61 @@
+import {Router} from 'express'
+import apex from '../config/apex.js'
+import apRoutes from '../config/apRoutes.js'
+const apRouter = Router()
+apRouter
+.route(apRoutes.inbox)
+.get(apex.net.inbox.get)
+.post(apex.net.inbox.post)
+apRouter
+.route(apRoutes.outbox)
+.get(apex.net.outbox.get)
+.post(apex.net.outbox.post)
+apRouter.get(
+  apRoutes.actor,
+  apex.net.actor.get
+)
+apRouter.get(
+  apRoutes.followers,
+  apex.net.followers.get
+)
+apRouter.get(
+  apRoutes.following,
+  apex.net.following.get
+)
+apRouter.get(
+  apRoutes.liked,
+  apex.net.liked.get
+)
+apRouter.get(
+  apRoutes.object,
+  apex.net.object.get
+)
+apRouter.get(
+  apRoutes.activity,
+  apex.net.activityStream.get
+)
+apRouter.get(
+  apRoutes.shares,
+  apex.net.shares.get
+)
+apRouter.get(
+  apRoutes.likes,
+  apex.net.likes.get
+)
+apRouter.get(
+  '/.well-known/webfinger',
+  apex.net.webfinger.get
+)
+apRouter.get(
+  '/.well-known/node-info',
+  apex.net.nodeInfoLocation.get
+)
+apRouter.get(
+  '/nodeinfo/:version',
+  apex.net.nodeInfo.get
+)
+apRouter.post(
+  '/proxy',
+  apex.net.proxy.post
+)
+export default apRouter
