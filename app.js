@@ -1,5 +1,8 @@
 import {createWriteStream} from 'fs'
-import {dirname, join} from 'path'
+import {
+  dirname,
+  join
+} from 'path'
 import {fileURLToPath} from 'url'
 import 'dotenv/config'
 import express from 'express'
@@ -49,7 +52,7 @@ app.use(
   )
 )
 app.use(
-  '/api/ap',
+  '/ap',
   apRouter
 )
 dbClient.connect().then(() => {

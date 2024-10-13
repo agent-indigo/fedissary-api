@@ -14,7 +14,7 @@ const apex = activitypubExpress({
       process.env.NODE_ENV === 'production' ? 'https' : 'http'
     }://${
       process.env.DOMAIN
-    }/api/ap/proxy`
+    }/ap/proxy`
   }
 })
 export default apex
