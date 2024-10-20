@@ -19,7 +19,7 @@ const dbClient = new MongoClient(`mongodb+srv://${
 }:${
   process.env.MONGODB_PASSWORD ?? ''
 }@${
-  process.env.MONGODB_HOST ?? ''
+  process.env.MONGODB_HOST ?? 'mongodb://localhost:27017'
 }?retryWrites=true&w=majority`)
 const app = express()
 app.use(
@@ -64,7 +64,7 @@ dbClient.connect().then(() => {
   () => console.log(`Listening on ${
     `http${process.env.NODE_ENV === 'production' ? 's' : ''}`
   }://${
-    process.env.DOMAIN ?? ''
+    process.env.DOMAIN ?? 'localhost'
   }:8080 in ${
     process.env.NODE_ENV
   } mode.`)
