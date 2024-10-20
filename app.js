@@ -56,7 +56,7 @@ app.use(
   apRouter
 )
 dbClient.connect().then(() => {
-  apex.store.db = dbClient.db(process.env.MONGODB_DATABASE ?? '')
+  apex.store.db = dbClient.db(process.env.MONGODB_DATABASE ?? 'fedissary')
   console.log('MongoDB successfully connected.')
   return apex.store.setup()
 }).then(() => app.listen(
