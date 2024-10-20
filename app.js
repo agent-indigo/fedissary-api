@@ -56,15 +56,16 @@ app.use(
   apRouter
 )
 dbClient.connect().then(() => {
-  apex.store.db = dbClient.db('fedissary')
+  apex.store.db = dbClient.db(process.env.MONGODB_DATABASE)
+  console.log('MongoDB successfully connected.')
   return apex.store.setup()
 }).then(() => app.listen(
   8080,
   () => console.log(`Listening on ${
-    process.env.NODE_ENV === 'production' ? 'https' : 'http'
+    `http${process.env.NODE_ENV === 'production' ? 's' : ''}`
   }://${
     process.env.DOMAIN
   }:8080 in ${
     process.env.NODE_ENV
-  } mode`)
+  } mode.`)
 ))
