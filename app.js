@@ -15,11 +15,11 @@ import {MongoClient} from 'mongodb'
 import apex from './config/apex.js'
 import apRouter from './routers/apRouter.js'
 const dbClient = new MongoClient(`mongodb+srv://${
-  process.env.MONGODB_USER
+  process.env.MONGODB_USER ?? ''
 }:${
-  process.env.MONGODB_PASSWORD
+  process.env.MONGODB_PASSWORD ?? ''
 }@${
-  process.env.MONGODB_HOST
+  process.env.MONGODB_HOST ?? ''
 }?retryWrites=true&w=majority`)
 const app = express()
 app.use(
@@ -56,7 +56,7 @@ app.use(
   apRouter
 )
 dbClient.connect().then(() => {
-  apex.store.db = dbClient.db(process.env.MONGODB_DATABASE)
+  apex.store.db = dbClient.db(process.env.MONGODB_DATABASE ?? '')
   console.log('MongoDB successfully connected.')
   return apex.store.setup()
 }).then(() => app.listen(
@@ -64,7 +64,7 @@ dbClient.connect().then(() => {
   () => console.log(`Listening on ${
     `http${process.env.NODE_ENV === 'production' ? 's' : ''}`
   }://${
-    process.env.DOMAIN
+    process.env.DOMAIN ?? ''
   }:8080 in ${
     process.env.NODE_ENV
   } mode.`)
