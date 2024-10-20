@@ -19,7 +19,7 @@ const dbClient = new MongoClient(`mongodb+srv://${
 }:${
   process.env.MONGODB_PASSWORD ?? ''
 }@${
-  process.env.MONGODB_HOST ?? 'mongodb://localhost:27017'
+  process.env.MONGODB_HOST ?? 'localhost'
 }?retryWrites=true&w=majority`)
 const app = express()
 app.use(
